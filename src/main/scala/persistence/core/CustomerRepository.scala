@@ -7,9 +7,10 @@ import persistence.MongoConnectionFactory
 import persistence.entity.CustomerEntity
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.WriteResult
+import reactivemongo.bson.{BSONDocumentReader, BSONObjectID, BSONDocument}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Promise, ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class CustomerRepository {
@@ -27,7 +28,7 @@ class CustomerRepository {
     users.get(id)
   }
 
-  def create(customer: Customer):Unit = {
+  def create(customer: Customer) = {
 
     val entity = CustomerEntity.toCustomerEntity(customer)
 
@@ -35,8 +36,24 @@ class CustomerRepository {
 
     future.onComplete {
       case Failure(e) => throw e
-      case Success(writeResult) =>
-        println(s"successfully inserted document with result: $writeResult")
+      case Success(result) =>
+        println(s"successfully inserted document with result: $result")
     }
+  }
+
+  def get(id: String) : Future[Customer] = {
+
+    val p = Promise[Customer]()
+
+    val query = BSONDocument("_id" -> BSONObjectID(id))
+
+    val future = customerCollection.find(query).one[CustomerEntity]
+    future.onComplete {
+      case Failure(e) => throw e
+      case Success(result) => {
+        p.success(Customer toCustomer result.get)
+      }
+    }
+    p.future
   }
 }
