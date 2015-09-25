@@ -2,7 +2,6 @@ package persistence.entity
 
 import com.github.nscala_time.time.Imports._
 import domain.model.Customer
-import org.joda.time.format.ISODateTimeFormat
 import reactivemongo.bson._
 
 case class CustomerEntity(id: BSONObjectID = BSONObjectID.generate,

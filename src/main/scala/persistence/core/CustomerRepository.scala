@@ -7,10 +7,10 @@ import persistence.MongoConnectionFactory
 import persistence.entity.CustomerEntity
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.{BSONDocumentReader, BSONObjectID, BSONDocument}
+import reactivemongo.bson.{BSONObjectID, BSONDocument}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Promise, ExecutionContext, Future}
+import scala.concurrent.{Promise, Future}
 import scala.util.{Failure, Success}
 
 class CustomerRepository {
